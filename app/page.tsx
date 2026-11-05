@@ -1,3 +1,9 @@
+import { Hero } from "@/components/hero"
+
 export default function Page() {
-  return <main className="min-h-[calc(100svh-6rem)]" />
+  return (
+    <main>
+      <Hero />
+    </main>
+  )
 }
