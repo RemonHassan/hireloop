@@ -39,7 +39,7 @@ export function Navbar() {
 
         <nav
           aria-label="Main navigation"
-          className="hidden items-center rounded-2xl border border-white/[0.06] bg-[#151515] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:flex"
+          className="hidden items-center rounded-2xl border border-white/6 bg-[#151515] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:flex"
         >
           {navLinks.map((link) => (
             <Link
