@@ -15,6 +15,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
+import { useSession, signOut } from "@/lib/auth-client"
+import { date } from "better-auth"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs", active: true },
@@ -24,7 +26,12 @@ const navLinks = [
 
 export function Navbar() {
   const [open, setOpen] = useState(false)
+  const { data: session } = useSession()
 
+  console.log("user data form navbar", session)
+  const handelSignOut = async () => {
+    await signOut()
+  }
   return (
     <header className="sticky top-0 z-40 w-full bg-[#050505]">
       <div className="mx-auto flex h-24 w-full max-w-[1720px] items-center justify-between px-5 sm:px-8 lg:px-16 xl:px-24">
@@ -58,21 +65,37 @@ export function Navbar() {
           ))}
 
           <span aria-hidden="true" className="mx-2 h-6 w-px bg-white/15" />
+          {session?.user ? (
+            <>
+              <span className="text-blue-600">
+                Welcome, {session?.user?.name}
+              </span>
+              <Button
+                onClick={handelSignOut}
+                nativeButton={false}
+                className="ml-1 h-11 rounded-lg bg-[#5b3bf5] px-6 text-[15px] font-medium text-white hover:bg-[#6a4bff]"
+              >
+                SignOut
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-[#8f7cff] transition-colors hover:bg-white/5 hover:text-[#a596ff]"
+              >
+                Sign In
+              </Link>
 
-          <Link
-            href="/sign-in"
-            className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-[#8f7cff] transition-colors hover:bg-white/5 hover:text-[#a596ff]"
-          >
-            Sign In
-          </Link>
-
-          <Button
-            nativeButton={false}
-            render={<Link href="/sign-up" />}
-            className="ml-1 h-11 rounded-lg bg-[#5b3bf5] px-6 text-[15px] font-medium text-white hover:bg-[#6a4bff]"
-          >
-            Get Started
-          </Button>
+              <Button
+                nativeButton={false}
+                render={<Link href="/sign-up" />}
+                className="ml-1 h-11 rounded-lg bg-[#5b3bf5] px-6 text-[15px] font-medium text-white hover:bg-[#6a4bff]"
+              >
+                Get Started
+              </Button>
+            </>
+          )}
         </nav>
 
         <Sheet open={open} onOpenChange={setOpen}>
