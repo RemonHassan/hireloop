@@ -67,6 +67,7 @@ export function Navbar() {
           </Link>
 
           <Button
+            nativeButton={false}
             render={<Link href="/sign-up" />}
             className="ml-1 h-11 rounded-lg bg-[#5b3bf5] px-6 text-[15px] font-medium text-white hover:bg-[#6a4bff]"
           >
@@ -128,6 +129,7 @@ export function Navbar() {
               </Link>
 
               <Button
+                nativeButton={false}
                 render={<Link href="/sign-up" onClick={() => setOpen(false)} />}
                 className="mt-2 h-12 w-full rounded-lg bg-[#5b3bf5] text-base font-medium text-white hover:bg-[#6a4bff]"
               >
