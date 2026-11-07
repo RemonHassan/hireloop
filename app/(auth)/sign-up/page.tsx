@@ -1,36 +1,56 @@
 "use client"
 
+import type { FormEvent } from "react"
 import Link from "next/link"
-import { UserPlus } from "lucide-react"
+import {
+  BriefcaseBusiness,
+  ShieldCheck,
+  UserPlus,
+  UserRound,
+} from "lucide-react"
+import { redirect } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { authClient } from "@/lib/auth-client"
-import { redirect } from "next/navigation"
+
+const roles = [
+  { value: "seeker", label: "Seeker", icon: UserRound },
+  { value: "recruiter", label: "Recruiter", icon: BriefcaseBusiness },
+  { value: "admin", label: "Admin", icon: ShieldCheck },
+] as const
+
+type UserRole = (typeof roles)[number]["value"]
+
+type SignUpUser = {
+  name: string
+  email: string
+  password: string
+  role: UserRole
+}
 
 const SignUpPage = () => {
-  async function handleSubmit(event: React.SubmitEvent<HTMLElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    const formData = new FormData(event.target)
-    const user = Object.fromEntries(formData.entries()) as {
-      name: string
-      email: string
-      password: string
+    const formData = new FormData(event.currentTarget)
+    const user: SignUpUser = {
+      name: String(formData.get("name") ?? ""),
+      email: String(formData.get("email") ?? ""),
+      password: String(formData.get("password") ?? ""),
+      role: (formData.get("role") ?? "seeker") as UserRole,
     }
-    const { data, error } = await authClient.signUp.email({
-      ...user,
-    })
+
+    const { data, error } = await authClient.signUp.email(user)
+
     if (data) {
       redirect("/")
     }
     if (error) {
       console.log(error)
     }
-
-    // TODO: send these values to Better Auth.
-    console.log("Sign up form data:", data)
   }
 
   return (
@@ -68,6 +88,34 @@ const SignUpPage = () => {
               className="h-11 rounded-lg border-white/10 bg-white/4 px-3.5 text-sm text-white placeholder:text-white/35 focus-visible:border-[#6a4bff] focus-visible:ring-[#5b3bf5]/30 dark:border-white/10 dark:bg-white/4"
             />
           </div>
+
+          <fieldset className="space-y-2">
+            <legend className="text-sm font-medium text-white/80">
+              I am a
+            </legend>
+            <RadioGroup
+              name="role"
+              defaultValue="seeker"
+              required
+              className="grid grid-cols-3 gap-2"
+            >
+              {roles.map(({ value, label, icon: Icon }) => (
+                <label
+                  key={value}
+                  className="relative flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-white/10 bg-white/4 px-2 py-3 text-center transition-colors hover:bg-white/[0.06] has-[:checked]:border-[#5b3bf5] has-[:checked]:bg-[#5b3bf5]/10 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#5b3bf5]/40"
+                >
+                  <RadioGroupItem
+                    value={value}
+                    className="absolute top-2 right-2 size-3.5 border-white/25 bg-white/5 dark:bg-white/5 data-checked:border-[#5b3bf5] data-checked:bg-[#5b3bf5] data-checked:text-white"
+                  />
+                  <Icon className="size-4 text-[#a596ff]" aria-hidden="true" />
+                  <span className="text-xs font-medium text-white/75">
+                    {label}
+                  </span>
+                </label>
+              ))}
+            </RadioGroup>
+          </fieldset>
 
           <div className="space-y-2">
             <Label htmlFor="email" className="text-white/80">

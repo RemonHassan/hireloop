@@ -24,9 +24,9 @@ Single-package Next.js 16 App Router app with React 19, strict TypeScript, and T
 ## Auth and database
 
 - Better Auth is configured in `lib/auth.ts`; its catch-all route is `app/api/auth/[...all]/route.ts`.
-- MongoDB is hardcoded to `mongodb://localhost:27017`, database `hireloopdb`. Start a local MongoDB before exercising auth; no env var controls this yet.
-- `.env` is gitignored and only defines `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL`. Google sign-in also reads `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`, which are absent; add them or Google login fails.
-- `lib/auth-client.ts` currently creates a second, unconfigured client for its exported `signIn` / `signUp` / `useSession`. Prefer the configured `authClient` if you touch this file.
+- MongoDB comes from `BETTER_AUTH_DB_URI`, with database `hireloopdb`. A reachable Mongo instance is required before exercising auth.
+- `.env` is gitignored and defines `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, and `BETTER_AUTH_DB_URI`. Google sign-in also reads `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET`, which are absent; add them or Google login fails.
+- User `role` is a Better Auth additional field (`seeker`, `recruiter`, `admin`). To accept a new user field at sign-up, set `input: true` in `lib/auth.ts`; `lib/auth-client.ts` infers it through `inferAdditionalFields<typeof auth>()`.
 
 ## UI conventions
 
