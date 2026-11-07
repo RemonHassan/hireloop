@@ -1,6 +1,5 @@
 "use client"
 
-import type { FormEvent } from "react"
 import Link from "next/link"
 import { LogIn } from "lucide-react"
 
@@ -8,26 +7,29 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-type SignInValues = {
-  email: string
-  password: string
-  remember: boolean
-}
+import { authClient } from "@/lib/auth-client"
+import { redirect } from "next/navigation"
 
 const SignInPage = () => {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLElement>) {
     event.preventDefault()
 
-    const formData = new FormData(event.currentTarget)
-    const values: SignInValues = {
-      email: String(formData.get("email") ?? ""),
-      password: String(formData.get("password") ?? ""),
-      remember: formData.get("remember") === "on",
+    const formData = new FormData(event.target)
+    const user = Object.fromEntries(formData.entries()) as {
+      email: string
+      password: string
     }
-
+    const { data, error } = await authClient.signIn.email({
+      ...user,
+    })
     // TODO: send these values to Better Auth.
-    console.log("Sign in form data:", values)
+    console.log("Sign in form data:", data)
+    if (data) {
+      redirect("/")
+    }
+    if (error) {
+      console.log(error)
+    }
   }
 
   return (
