@@ -17,15 +17,21 @@ import {
 import { cn } from "@/lib/utils"
 import { useSession, signOut } from "@/lib/auth-client"
 
-const navLinks = [
-  { label: "Browse Jobs", href: "/jobs", active: true },
-  { label: "Company", href: "/companies", active: false },
-  { label: "Pricing", href: "/pricing", active: false },
-]
-
 export function Navbar() {
   const [open, setOpen] = useState(false)
   const { data: session } = useSession()
+
+  // NavLinks
+  const navLinks = [
+    { label: "Browse Jobs", href: "/jobs", active: true },
+    { label: "Company", href: "/companies", active: false },
+    { label: "Pricing", href: "/pricing", active: false },
+    {
+      label: "Dashboard",
+      href: `/dashboard/${session?.user?.role || "seeker"}`,
+      active: false,
+    },
+  ]
 
   console.log("user data form navbar", session)
   const handelSignOut = async () => {
