@@ -16,6 +16,7 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { Briefcase, Calendar, MapPin } from "lucide-react"
+import { createJob } from "@/lib/actions/jobs"
 
 type JobType = "full-time" | "part-time" | "contract" | "internship"
 
@@ -93,6 +94,9 @@ export default function NewJobPage() {
     event.preventDefault()
     const jobData: JobFormData = { ...form }
     console.log("new job form data:", jobData)
+    const result = await createJob(jobData)
+
+    console.log("CreateJob result", result)
   }
 
   return (
