@@ -1,7 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
-import { Navbar } from "@/components/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
@@ -29,10 +28,7 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-svh bg-[#050505] text-white">
-        <ThemeProvider>
-          <Navbar />
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   )
