@@ -102,7 +102,7 @@ const SignUpPage = () => {
               {roles.map(({ value, label, icon: Icon }) => (
                 <label
                   key={value}
-                  className="relative flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-white/10 bg-white/4 px-2 py-3 text-center transition-colors hover:bg-white/[0.06] has-[:checked]:border-[#5b3bf5] has-[:checked]:bg-[#5b3bf5]/10 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#5b3bf5]/40"
+                  className="relative flex cursor-pointer flex-col items-center gap-2 rounded-lg border border-white/10 bg-white/4 px-2 py-3 text-center transition-colors hover:bg-white/6 has-checked:border-[#5b3bf5] has-checked:bg-[#5b3bf5]/10 has-focus-visible:ring-2 has-focus-visible:ring-[#5b3bf5]/40"
                 >
                   <RadioGroupItem
                     value={value}

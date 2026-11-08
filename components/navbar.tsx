@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { useSession, signOut } from "@/lib/auth-client"
-import { date } from "better-auth"
 
 const navLinks = [
   { label: "Browse Jobs", href: "/jobs", active: true },
