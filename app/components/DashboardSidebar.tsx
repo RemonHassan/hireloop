@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useSession } from "@/lib/auth-client"
-import { Plus, PlusCircle } from "lucide-react"
+import { PlusCircle } from "lucide-react"
 import {
   Bookmark,
   Briefcase,
