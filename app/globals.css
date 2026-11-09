@@ -5,6 +5,17 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+    /* Brand + surface tokens used by shared component recipes. */
+    --color-brand: #5c53fe;
+    --color-brand-hover: #7b74ff;
+    --color-brand-soft: #8b85ff;
+    --color-page: #050505;
+    --color-surface: #101010;
+    --color-surface-raised: #1a1a1f;
+    --color-surface-muted: #151515;
+    --color-surface-deep: #0b0b0b;
+    --color-ink: #ededef;
+
     --font-heading: var(--font-sans);
     --font-sans: var(--font-sans);
     --color-sidebar-ring: var(--sidebar-ring);

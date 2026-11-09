@@ -1,8 +1,8 @@
-import { JobFormData } from "@/app/dashboard/recruiter/jobs/new/page"
+import type { CreateJobResult, DeleteJobResult, JobFormData } from "@/types"
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"
 
-export const createJob = async (data: JobFormData) => {
+export async function createJob(data: JobFormData): Promise<CreateJobResult> {
   const res = await fetch(`${BASE_URL}/jobs`, {
     method: "POST",
     headers: {
@@ -13,7 +13,7 @@ export const createJob = async (data: JobFormData) => {
   return res.json()
 }
 
-export const deleteJob = async (jobId: string) => {
+export async function deleteJob(jobId: string): Promise<DeleteJobResult> {
   const res = await fetch(`${BASE_URL}/jobs/${jobId}`, {
     method: "DELETE",
   })

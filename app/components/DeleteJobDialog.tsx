@@ -1,4 +1,7 @@
 "use client"
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Trash2Icon } from "lucide-react"
 
 import {
@@ -14,11 +17,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
-import { JobRow } from "../dashboard/recruiter/jobs/page"
-import { deleteJob } from "@/lib/actions/jobs"
-import { useState } from "react"
 import { toast } from "@/components/ui/toast"
-import { useRouter } from "next/navigation"
+import { deleteJob } from "@/lib/actions/jobs"
+import type { JobRow } from "@/types"
 
 export function DeleteJobDialog({ job }: { job: JobRow }) {
   const [open, setOpen] = useState(false)
@@ -26,11 +27,11 @@ export function DeleteJobDialog({ job }: { job: JobRow }) {
 
   const handleDelete = async () => {
     const res = await deleteJob(job._id)
-    console.log("Deleting", job._id, res)
+
     if (res.deletedCount) {
       setOpen(false)
       toast.add({
-        title: `${job.title}`,
+        title: job.title,
         description: "Was Removed",
       })
       router.refresh()
@@ -41,7 +42,7 @@ export function DeleteJobDialog({ job }: { job: JobRow }) {
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger
         render={
-          <Button variant="destructive">
+          <Button variant="destructive" aria-label={`Delete ${job.title}`}>
             <Trash2Icon />
           </Button>
         }
@@ -51,10 +52,11 @@ export function DeleteJobDialog({ job }: { job: JobRow }) {
           <AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
             <Trash2Icon />
           </AlertDialogMedia>
-          <AlertDialogTitle>Delete chat?</AlertDialogTitle>
+          <AlertDialogTitle>Delete job post?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete this chat conversation. View{" "}
-            <a href="#">Settings</a> delete any memories saved during this chat.
+            This will permanently delete{" "}
+            <span className="font-medium text-white">{job.title}</span>. This
+            action cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -67,5 +69,3 @@ export function DeleteJobDialog({ job }: { job: JobRow }) {
     </AlertDialog>
   )
 }
-
-// DeleteJobDialog

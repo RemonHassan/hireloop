@@ -33,12 +33,11 @@ export function Navbar() {
     },
   ]
 
-  console.log("user data form navbar", session)
   const handelSignOut = async () => {
     await signOut()
   }
   return (
-    <header className="sticky top-0 z-40 w-full bg-[#050505]">
+    <header className="sticky top-0 z-40 w-full bg-page">
       <div className="mx-auto flex h-24 w-full max-w-[1720px] items-center justify-between px-5 sm:px-8 lg:px-16 xl:px-24">
         <Link href="/" aria-label="HireLoop home" className="shrink-0">
           <Image
@@ -51,7 +50,7 @@ export function Navbar() {
 
         <nav
           aria-label="Main navigation"
-          className="hidden items-center rounded-2xl border border-white/6 bg-[#151515] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:flex"
+          className="hidden items-center rounded-2xl border border-white/6 bg-surface-muted p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] lg:flex"
         >
           {navLinks.map((link) => (
             <Link
@@ -78,7 +77,7 @@ export function Navbar() {
               <Button
                 onClick={handelSignOut}
                 nativeButton={false}
-                className="ml-1 h-11 rounded-lg bg-[#5b3bf5] px-6 text-[15px] font-medium text-white hover:bg-[#6a4bff]"
+                className="ml-1 h-11 rounded-lg bg-brand px-6 text-[15px] font-medium text-white hover:bg-brand-hover"
               >
                 SignOut
               </Button>
@@ -87,7 +86,7 @@ export function Navbar() {
             <>
               <Link
                 href="/sign-in"
-                className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-[#8f7cff] transition-colors hover:bg-white/5 hover:text-[#a596ff]"
+                className="rounded-lg px-4 py-2.5 text-[15px] font-medium text-brand-soft transition-colors hover:bg-white/5 hover:text-white"
               >
                 Sign In
               </Link>
@@ -95,7 +94,7 @@ export function Navbar() {
               <Button
                 nativeButton={false}
                 render={<Link href="/sign-up" />}
-                className="ml-1 h-11 rounded-lg bg-[#5b3bf5] px-6 text-[15px] font-medium text-white hover:bg-[#6a4bff]"
+                className="ml-1 h-11 rounded-lg bg-brand px-6 text-[15px] font-medium text-white hover:bg-brand-hover"
               >
                 Get Started
               </Button>
@@ -119,7 +118,7 @@ export function Navbar() {
 
           <SheetContent
             side="right"
-            className="w-[min(88vw,22rem)] border-white/10 bg-[#0b0b0b] p-0 text-white"
+            className="w-[min(88vw,22rem)] border-white/10 bg-surface-deep p-0 text-white"
           >
             <SheetHeader className="border-b border-white/10 px-6 py-5">
               <SheetTitle className="text-white">Menu</SheetTitle>
@@ -151,7 +150,7 @@ export function Navbar() {
               <Link
                 href="/sign-in"
                 onClick={() => setOpen(false)}
-                className="rounded-lg px-4 py-3 text-base font-medium text-[#8f7cff] transition-colors hover:bg-white/5 hover:text-[#a596ff]"
+                className="rounded-lg px-4 py-3 text-base font-medium text-brand-soft transition-colors hover:bg-white/5 hover:text-white"
               >
                 Sign In
               </Link>
@@ -159,7 +158,7 @@ export function Navbar() {
               <Button
                 nativeButton={false}
                 render={<Link href="/sign-up" onClick={() => setOpen(false)} />}
-                className="mt-2 h-12 w-full rounded-lg bg-[#5b3bf5] text-base font-medium text-white hover:bg-[#6a4bff]"
+                className="mt-2 h-12 w-full rounded-lg bg-brand text-base font-medium text-white hover:bg-brand-hover"
               >
                 Get Started
               </Button>

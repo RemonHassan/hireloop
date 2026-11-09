@@ -1,48 +1,15 @@
 import Link from "next/link"
-
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
 import { Eye, Pencil, Plus, Users } from "lucide-react"
-import type {
-  JobFormData,
-  JobStatus,
-} from "@/app/dashboard/recruiter/jobs/new/page"
-import { getJobs } from "@/lib/api/jobs"
+
 import { DeleteJobDialog } from "@/app/components/DeleteJobDialog"
-
-// Table rows carry the same flat shape the "Post a New Job" form (JobFormData)
-// stores, plus the extra fields only the table needs.
-
-export type JobRow = JobFormData & {
-  _id: string
-
-  /** Relativized post date, e.g. "Posted 4d ago". */
-  posted: string
-}
-
-/** "25", "40", "per hour" → "€25 – €40 / hr" (as in the Figma rows). */
-const formatCompensation = (job: JobFormData) =>
-  `€${job.minSalary} – €${job.maxSalary} / ${job.salaryFrequency.replace("per ", "")}`
-
-/** "2025-05-30" → "May 30, 2025". Fixed en-US so SSR and client agree. */
-const formatDeadline = (deadline: string) =>
-  new Date(deadline).toLocaleDateString("en-US", {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  })
-
-const badgeClass =
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium capitalize"
-const statusStyles: Record<JobStatus, string> = {
-  active: "border-emerald-400/30 bg-emerald-400/15 text-emerald-300",
-  expired: "border-white/10 bg-white/5 text-white/50",
-}
-const typePillClass =
-  "inline-flex items-center whitespace-nowrap rounded-lg border border-white/10 bg-[#1A1A1F] px-2.5 py-0.5 text-xs capitalize text-white/80"
-
-const iconButtonClass =
-  "flex size-8 items-center justify-center rounded-md border border-white/10 bg-[#1A1A1F] text-white/60 transition-colors hover:border-white/25 hover:text-white"
+import { JobStatusBadge, JobTypePill } from "@/components/shared/job-badges"
+import { PageHeader } from "@/components/shared/page-header"
+import { buttonVariants } from "@/components/ui/button"
+import { getJobs } from "@/lib/api/jobs"
+import { formatCompensation, formatDeadline } from "@/lib/format"
+import { iconButtonClass, surfaceClass } from "@/lib/styles"
+import { cn } from "@/lib/utils"
+import type { JobRow } from "@/types"
 
 // Responsive column visibility — shared by <th> and <td> so they always agree.
 const cellVis = {
@@ -59,7 +26,6 @@ const cellClass = "px-3 py-3.5"
 
 export default async function RecruiterJobsPage() {
   const jobs: JobRow[] = await getJobs()
-  console.log("jobs data", jobs) // wire to backend fetch later
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
@@ -72,28 +38,22 @@ export default async function RecruiterJobsPage() {
         <span className="text-white/90">Job Listings &amp; Postings</span>
       </nav>
 
-      {/* Page heading + primary action */}
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-col gap-1.5">
-          <h1 className="font-heading text-[28px] leading-[1.15] font-bold tracking-[-0.02em] text-white">
-            Manage Job Posts
-          </h1>
-          <p className="text-sm text-white/60">
-            Review live listings, monitor applicants, and update job details
-            across your organization.
-          </p>
-        </div>
-        <Link
-          href="/dashboard/recruiter/jobs/new"
-          className={cn(buttonVariants(), "bg-[#5C53FE] hover:bg-[#7B74FF]")}
-        >
-          <Plus aria-hidden />
-          New Job Post
-        </Link>
-      </header>
+      <PageHeader
+        title="Manage Job Posts"
+        description="Review live listings, monitor applicants, and update job details across your organization."
+        actions={
+          <Link
+            href="/dashboard/recruiter/jobs/new"
+            className={cn(buttonVariants(), "bg-brand hover:bg-brand-hover")}
+          >
+            <Plus aria-hidden />
+            New Job Post
+          </Link>
+        }
+      />
 
       {/* Postings table — columns collapse away on smaller screens instead of scrolling */}
-      <section className="overflow-hidden rounded-2xl border border-white/10 bg-[#101010]/95 shadow-[inset_0_3px_10px_rgba(255,255,255,0.04)]">
+      <section className={cn(surfaceClass, "overflow-hidden")}>
         <div className="overflow-x-auto">
           <table className="w-full table-fixed text-left text-sm">
             <thead>
@@ -159,13 +119,13 @@ export default async function RecruiterJobsPage() {
                   <td className={cn(cellClass, "px-5")}>
                     <div className="flex items-center gap-3">
                       <span
-                        className="hidden size-10 shrink-0 items-center justify-center rounded-lg bg-[#5C53FE]/15 text-sm font-semibold text-[#8B85FF] sm:flex"
+                        className="hidden size-10 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-sm font-semibold text-brand-soft sm:flex"
                         aria-hidden
                       >
                         {job.title.charAt(0)}
                       </span>
                       <div className="flex min-w-0 flex-col">
-                        <span className="truncate font-medium text-[#EDEDEF]">
+                        <span className="truncate font-medium text-ink">
                           {job.title}
                         </span>
                         <span className="truncate text-xs text-white/50">
@@ -178,7 +138,7 @@ export default async function RecruiterJobsPage() {
                   {/* Company & location */}
                   <td className={cn(cellClass, cellVis.company)}>
                     <div className="flex min-w-0 flex-col">
-                      <span className="truncate text-[#EDEDEF]">
+                      <span className="truncate text-ink">
                         {job.companyName}
                       </span>
                       <span className="truncate text-xs text-white/50">
@@ -191,7 +151,7 @@ export default async function RecruiterJobsPage() {
 
                   {/* Type */}
                   <td className={cn(cellClass, cellVis.type)}>
-                    <span className={typePillClass}>{job.jobType}</span>
+                    <JobTypePill type={job.jobType} />
                   </td>
 
                   {/* Compensation */}
@@ -211,15 +171,13 @@ export default async function RecruiterJobsPage() {
 
                   {/* Status */}
                   <td className={cellClass}>
-                    <span className={cn(badgeClass, statusStyles[job.status])}>
-                      {job.status}
-                    </span>
+                    <JobStatusBadge status={job.status} />
                   </td>
 
                   {/* Deadline */}
                   <td className={cn(cellClass, cellVis.deadline)}>
                     <div className="flex flex-col whitespace-nowrap">
-                      <span className="text-[#EDEDEF]">
+                      <span className="text-ink">
                         {formatDeadline(job.deadline)}
                       </span>
                       <span className="text-xs text-white/50">
@@ -245,7 +203,7 @@ export default async function RecruiterJobsPage() {
                       >
                         <Pencil aria-hidden className="size-4" />
                       </button>
-                      <DeleteJobDialog job={job}></DeleteJobDialog>
+                      <DeleteJobDialog job={job} />
                     </div>
                   </td>
                 </tr>

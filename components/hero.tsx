@@ -71,7 +71,7 @@ export function Hero() {
         </p>
 
         <form action="/jobs" className="mt-8 w-full max-w-125">
-          <div className="flex flex-col rounded-2xl border border-white/10 bg-[#151515] p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:h-14.5 sm:flex-row sm:items-center sm:gap-0 sm:p-1.5">
+          <div className="flex flex-col rounded-2xl border border-white/10 bg-surface-muted p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:h-14.5 sm:flex-row sm:items-center sm:gap-0 sm:p-1.5">
             <label className="flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl px-2.5 sm:h-full sm:px-3">
               <Search
                 className="size-4 shrink-0 text-white/55"
@@ -108,7 +108,7 @@ export function Hero() {
             <Button
               type="submit"
               aria-label="Search jobs"
-              className="mt-2 h-11 w-full shrink-0 rounded-xl bg-[#5b3bf5] text-white hover:bg-[#6a4bff] sm:mt-0 sm:ml-2 sm:h-10 sm:w-10"
+              className="mt-2 h-11 w-full shrink-0 rounded-xl bg-brand text-white hover:bg-brand-hover sm:mt-0 sm:ml-2 sm:h-10 sm:w-10"
             >
               <Search className="size-4" aria-hidden="true" />
             </Button>
@@ -125,7 +125,7 @@ export function Hero() {
                 "rounded-full border px-3 py-1.5 text-[11px] transition-colors",
                 index === 0
                   ? "border-white/15 bg-[#242424] text-white/80"
-                  : "border-white/10 bg-[#151515] text-white/55 hover:bg-white/10 hover:text-white/80"
+                  : "border-white/10 bg-surface-muted text-white/55 hover:bg-white/10 hover:text-white/80"
               )}
             >
               {role}
