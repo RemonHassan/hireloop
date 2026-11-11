@@ -1,5 +1,10 @@
+import type { ApplicationFormData, CreateApplicationResult } from "@/types"
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"
-export const createApplication = async (data) => {
+
+export async function createApplication(
+  data: ApplicationFormData
+): Promise<CreateApplicationResult> {
   const res = await fetch(`${BASE_URL}/applications`, {
     method: "POST",
     headers: {
