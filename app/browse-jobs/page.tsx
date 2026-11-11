@@ -9,7 +9,6 @@ import { getJobs } from "@/lib/api/jobs"
 import { JOB_TYPES } from "@/lib/constants/jobs"
 import { formatJobType } from "@/lib/format"
 import type { JobFilterOption, JobRow } from "@/types"
-
 type BrowseJobsSearchParams = {
   [key: string]: string | string[] | undefined
 }

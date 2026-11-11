@@ -1,3 +1,4 @@
+"use client"
 import { Bookmark, Building2, Clock, MapPin, Tag, Wallet } from "lucide-react"
 
 import { MetaPill } from "@/components/shared/meta-pill"
@@ -9,10 +10,16 @@ import {
 import { surfaceClass } from "@/lib/styles"
 import { cn } from "@/lib/utils"
 import type { JobRow } from "@/types"
+import { useRouter } from "next/navigation"
 
 export function JobCard({ job }: { job: JobRow }) {
+  const router = useRouter()
+  const handleViewJobDetail = (jobId: string) => {
+    router.push(`/browse-jobs/${jobId}`)
+  }
   return (
     <article
+      onClick={() => handleViewJobDetail(job._id)}
       className={cn(
         surfaceClass,
         "p-5 transition-colors hover:border-white/20 sm:p-6"

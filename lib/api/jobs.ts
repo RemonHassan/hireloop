@@ -12,3 +12,12 @@ export async function getJobs(query: string = ""): Promise<JobRow[]> {
 
   return res.json()
 }
+
+/**
+ * The jobs API only exposes a collection endpoint, so a single job is picked
+ * from the listing response.
+ */
+export async function getJob(jobId: string): Promise<JobRow | null> {
+  const jobs = await getJobs()
+  return jobs.find((job) => job._id === jobId) ?? null
+}
