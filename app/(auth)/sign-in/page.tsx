@@ -1,9 +1,9 @@
 "use client"
 
-import type { FormEvent } from "react"
+import { type FormEvent } from "react"
 import Link from "next/link"
 import { LogIn } from "lucide-react"
-import { redirect } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 
 import { AuthCard } from "@/components/shared/auth-card"
 import { TextField } from "@/components/shared/form-fields"
@@ -16,6 +16,9 @@ import { cn } from "@/lib/utils"
 import type { SignInUser } from "@/types"
 
 const SignInPage = () => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectTo = searchParams.get("redirectTo") ?? "/"
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -26,7 +29,7 @@ const SignInPage = () => {
     })
 
     if (data) {
-      redirect("/")
+      router.push(redirectTo)
     }
     if (error) {
       console.log(error)

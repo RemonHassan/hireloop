@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link"
 import {
   BadgeCheck,
@@ -29,6 +30,9 @@ import {
 import { surfaceClass } from "@/lib/styles"
 import { cn } from "@/lib/utils"
 import type { JobRow } from "@/types"
+import { useSession } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { createApplication } from "@/lib/actions/applications"
 
 const REQUIREMENT_ICONS = [Code2, Cpu, PenTool, Monitor]
 
@@ -158,6 +162,31 @@ export function JobDetail({ job }: { job: JobRow }) {
       value: job.status === "active" ? "Accepting applications" : "Closed",
     },
   ]
+  const router = useRouter()
+  const { data: session } = useSession()
+  const user = session?.user
+  const handleApplyNow = async () => {
+    if (!user) {
+      router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
+      return
+    } else if (user.role === "seeker") {
+      // console.log("Save the application to database..")
+      const application = {
+        jobId: job._id,
+        userId: user.id,
+        email: user.email,
+        jobTitle: job.title,
+        companyName: job.companyName,
+      }
+      const result = await createApplication(application)
+      if (result.insertedId) {
+        console.log("Application successfull")
+        router.push(`/browse-jobs`)
+      }
+    } else {
+      console.log("user is not a job seeker")
+    }
+  }
 
   return (
     <div className="flex flex-col gap-5">
@@ -199,6 +228,7 @@ export function JobDetail({ job }: { job: JobRow }) {
             <Bookmark className="size-5" aria-hidden />
           </button>
           <Button
+            onClick={handleApplyNow}
             type="button"
             className="h-11 rounded-lg bg-white px-6 text-sm font-semibold text-black hover:bg-white/90"
           >
