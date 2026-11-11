@@ -2,6 +2,8 @@ export type { SignInUser, SignUpUser, UserRole } from "./auth"
 export type {
   CreateJobResult,
   DeleteJobResult,
+  JobFilterField,
+  JobFilterOption,
   JobFormData,
   JobRow,
   JobStatus,

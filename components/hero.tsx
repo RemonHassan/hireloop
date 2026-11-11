@@ -70,7 +70,7 @@ export function Hero() {
           thousands of curated opportunities and land your next role — faster.
         </p>
 
-        <form action="/jobs" className="mt-8 w-full max-w-125">
+        <form action="/browse-jobs" className="mt-8 w-full max-w-125">
           <div className="flex flex-col rounded-2xl border border-white/10 bg-surface-muted p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] sm:h-14.5 sm:flex-row sm:items-center sm:gap-0 sm:p-1.5">
             <label className="flex h-11 min-w-0 flex-1 items-center gap-2.5 rounded-xl px-2.5 sm:h-full sm:px-3">
               <Search
@@ -120,7 +120,7 @@ export function Hero() {
           {trendingRoles.map((role, index) => (
             <Link
               key={role}
-              href={`/jobs?q=${encodeURIComponent(role)}`}
+              href={`/browse-jobs?q=${encodeURIComponent(role)}`}
               className={cn(
                 "rounded-full border px-3 py-1.5 text-[11px] transition-colors",
                 index === 0

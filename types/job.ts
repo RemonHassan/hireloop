@@ -31,6 +31,16 @@ export type JobRow = JobFormData & {
   posted: string
 }
 
+/** Job fields that can be used to filter the browse-jobs listing. */
+export type JobFilterField = Extract<keyof JobFormData, "jobType" | "category">
+
+export type JobFilterOption = {
+  /** Matches the corresponding `JobFormData[JobFilterField]` value. */
+  value: string
+  label: string
+  count?: number
+}
+
 export type CreateJobResult = {
   insertedId?: string
   acknowledged?: boolean

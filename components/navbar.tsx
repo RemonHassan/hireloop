@@ -23,7 +23,7 @@ export function Navbar() {
 
   // NavLinks
   const navLinks = [
-    { label: "Browse Jobs", href: "/jobs", active: true },
+    { label: "Browse Jobs", href: "/browse-jobs", active: true },
     { label: "Company", href: "/companies", active: false },
     { label: "Pricing", href: "/pricing", active: false },
     {
