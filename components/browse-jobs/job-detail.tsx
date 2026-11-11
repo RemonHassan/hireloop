@@ -300,14 +300,14 @@ export function JobDetail({ job }: { job: JobRow }) {
               Company Overview
             </h2>
 
-            <div className="relative mt-5 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-surface-raised">
+            <div className="relative mt-5 flex aspect-4/3 items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-surface-raised">
               <div
                 aria-hidden
                 className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(92,83,254,0.35),transparent_60%),radial-gradient(circle_at_80%_90%,rgba(255,255,255,0.12),transparent_55%)]"
               />
               <div
                 aria-hidden
-                className="absolute inset-0 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:28px_28px] opacity-25"
+                className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] bg-size-[28px_28px] opacity-25"
               />
               <div className="relative flex flex-col items-center gap-3 text-white/70">
                 <span className="flex size-16 items-center justify-center rounded-2xl border border-white/15 bg-white/5 backdrop-blur">

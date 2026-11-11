@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { JobDetail } from "@/components/browse-jobs/job-detail"
-import { getJob } from "@/lib/api/jobs"
+import { getJob, getJobById } from "@/lib/api/jobs"
 
 type JobDetailsPageProps = {
   params: Promise<{ id: string }>
@@ -12,7 +12,7 @@ export async function generateMetadata({
   params,
 }: JobDetailsPageProps): Promise<Metadata> {
   const { id } = await params
-  const job = await getJob(id)
+  const job = await getJobById(id)
 
   if (!job) {
     return { title: "Job not found | HireLoop" }
