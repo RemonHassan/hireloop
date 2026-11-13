@@ -37,6 +37,7 @@ import {
   getApplicationsCount,
 } from "@/lib/actions/applications"
 import { toast } from "../ui/toast"
+import { getUserPremiumById } from "@/lib/api/user"
 
 const REQUIREMENT_ICONS = [Code2, Cpu, PenTool, Monitor]
 
@@ -174,9 +175,11 @@ export function JobDetail({ job }: { job: JobRow }) {
       router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
       return
     } else if (user.role === "seeker") {
+      // is premium user
+      const premiumResult = await getUserPremiumById(user.id)
       // number of jobs applied by this user
       const countResult = await getApplicationsCount(`applicantId=${user?.id}`)
-      if (countResult.count >= 10) {
+      if (!premiumResult.premium && countResult.count >= 2) {
         router.push(`/payment`)
         return
       } else {
@@ -190,10 +193,6 @@ export function JobDetail({ job }: { job: JobRow }) {
         const result = await createApplication(application)
         if (result.insertedId) {
           console.log("Application successfull")
-          toast.add({
-            title: `${job.title}`,
-            description: "Was added to applications",
-          })
           router.push(`/browse-jobs`)
         }
       }
