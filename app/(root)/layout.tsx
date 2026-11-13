@@ -1,4 +1,5 @@
 import { Navbar } from "@/components/navbar"
+import { Toaster } from "@/components/ui/toast"
 import React from "react"
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -6,6 +7,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     <div>
       <Navbar></Navbar>
       {children}
+      <Toaster />
     </div>
   )
 }

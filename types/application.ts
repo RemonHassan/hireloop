@@ -14,3 +14,8 @@ export type CreateApplicationResult = {
   insertedId?: string
   acknowledged?: boolean
 }
+
+/** An application as returned by the applications API. */
+export type ApplicationRow = ApplicationFormData & {
+  _id: string
+}

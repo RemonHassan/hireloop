@@ -1,5 +1,6 @@
 export type {
   ApplicationFormData,
+  ApplicationRow,
   CreateApplicationResult,
 } from "./application"
 export type { SignInUser, SignUpUser, UserRole } from "./auth"

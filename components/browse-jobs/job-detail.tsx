@@ -32,7 +32,11 @@ import { cn } from "@/lib/utils"
 import type { JobRow } from "@/types"
 import { useSession } from "@/lib/auth-client"
 import { useRouter } from "next/navigation"
-import { createApplication } from "@/lib/actions/applications"
+import {
+  createApplication,
+  getApplicationsCount,
+} from "@/lib/actions/applications"
+import { toast } from "../ui/toast"
 
 const REQUIREMENT_ICONS = [Code2, Cpu, PenTool, Monitor]
 
@@ -170,19 +174,30 @@ export function JobDetail({ job }: { job: JobRow }) {
       router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`)
       return
     } else if (user.role === "seeker") {
+      // number of jobs applied by this user
+      const countResult = await getApplicationsCount(`applicantId=${user?.id}`)
+      if (countResult.count >= 10) {
+        router.push(`/payment`)
+        return
+      } else {
+        const application = {
+          jobId: job._id,
+          userId: user.id,
+          email: user.email,
+          jobTitle: job.title,
+          companyName: job.companyName,
+        }
+        const result = await createApplication(application)
+        if (result.insertedId) {
+          console.log("Application successfull")
+          toast.add({
+            title: `${job.title}`,
+            description: "Was added to applications",
+          })
+          router.push(`/browse-jobs`)
+        }
+      }
       // console.log("Save the application to database..")
-      const application = {
-        jobId: job._id,
-        userId: user.id,
-        email: user.email,
-        jobTitle: job.title,
-        companyName: job.companyName,
-      }
-      const result = await createApplication(application)
-      if (result.insertedId) {
-        console.log("Application successfull")
-        router.push(`/browse-jobs`)
-      }
     } else {
       console.log("user is not a job seeker")
     }

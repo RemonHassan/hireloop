@@ -11,10 +11,15 @@ import {
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { getApplications } from "@/lib/actions/applications"
+import type { ApplicationRow } from "@/types"
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 
 const statusStyles = {
   applied: "border-white/10 bg-white/10 text-white/80",
   review: "border-amber-500/40 bg-amber-500/10 text-amber-300",
+  interview: "border-violet-500/40 bg-violet-500/10 text-violet-300",
   shortlisted: "border-sky-500/40 bg-sky-500/10 text-sky-300",
   rejected: "border-red-500/40 bg-red-500/10 text-red-300",
   offered: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
@@ -22,78 +27,56 @@ const statusStyles = {
 
 type ApplicationStatus = keyof typeof statusStyles
 
-type Application = {
-  id: number
-  title: string
-  company: string
-  jobType: string
-  workMode: string
-  applied: string
-  status: ApplicationStatus
-  icon: ReactNode
+type Application = ApplicationRow & {
+  jobType?: string
+  workMode?: string
+  applied?: string
+  status?: ApplicationStatus
 }
 
-const applications: Application[] = [
-  {
-    id: 1,
-    title: "Senior Frontend Engineer",
-    company: "Stark Industries",
-    jobType: "Full-time",
-    workMode: "Remote",
-    applied: "2 hours ago",
-    status: "applied",
-    icon: <CodeXml className="size-5" />,
-  },
-  {
-    id: 2,
-    title: "Product Designer",
-    company: "Cyberdyne Systems",
-    jobType: "Contract",
-    workMode: "Hybrid",
-    applied: "1 day ago",
-    status: "review",
-    icon: <PenTool className="size-5" />,
-  },
-  {
-    id: 3,
-    title: "Lead Data Scientist",
-    company: "Wayne Enterprises",
-    jobType: "Full-time",
-    workMode: "On-site",
-    applied: "4 days ago",
-    status: "shortlisted",
-    icon: <Database className="size-5" />,
-  },
-  {
-    id: 4,
-    title: "Cloud Architect",
-    company: "Oscorp Tech",
-    jobType: "Full-time",
-    workMode: "Remote",
-    applied: "1 week ago",
-    status: "rejected",
-    icon: <CloudCog className="size-5" />,
-  },
-  {
-    id: 5,
-    title: "AI Research Engineer",
-    company: "Hooli Corp",
-    jobType: "Full-time",
-    workMode: "Hybrid",
-    applied: "2 weeks ago",
-    status: "offered",
-    icon: <Bot className="size-5" />,
-  },
-]
+function getApplicationIcon(title: string): ReactNode {
+  const value = title.toLowerCase()
 
-const stats = [
-  { label: "Total Applied", value: "24" },
-  { label: "Shortlisted", value: "8" },
-  { label: "Interviews", value: "3", accent: "text-amber-400" },
-  { label: "Success Rate", value: "12%", accent: "text-emerald-400" },
-]
+  if (value.includes("design")) return <PenTool className="size-5" />
+  if (value.includes("data")) return <Database className="size-5" />
+  if (value.includes("cloud")) return <CloudCog className="size-5" />
+  if (value.includes("ai") || value.includes("machine")) {
+    return <Bot className="size-5" />
+  }
 
-const ApplicationsPage = () => {
+  return <CodeXml className="size-5" />
+}
+
+const ApplicationsPage = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+  const applications: Application[] = await getApplications(
+    `applicantId=${session?.user.id}`
+  )
+
+  const total = applications.length
+  const shortlisted = applications.filter(
+    (application) => application.status === "shortlisted"
+  ).length
+  const interviews = applications.filter(
+    (application) => application.status === "interview"
+  ).length
+  const offered = applications.filter(
+    (application) => application.status === "offered"
+  ).length
+  const successRate = total > 0 ? Math.round((offered / total) * 100) : 0
+
+  const stats = [
+    { label: "Total Applied", value: total },
+    { label: "Shortlisted", value: shortlisted },
+    { label: "Interviews", value: interviews, accent: "text-amber-400" },
+    {
+      label: "Success Rate",
+      value: `${successRate}%`,
+      accent: "text-emerald-400",
+    },
+  ]
   return (
     <div className="mx-auto w-full max-w-7xl px-6 py-8">
       {/* Header */}
@@ -174,69 +157,75 @@ const ApplicationsPage = () => {
             </thead>
 
             <tbody>
-              {applications.map((application) => (
-                <tr
-                  key={application.id}
-                  className="border-b border-white/5 last:border-b-0"
-                >
-                  {/* Job title */}
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
+              {applications.map((application) => {
+                const status = application.status ?? "applied"
+
+                return (
+                  <tr
+                    key={application._id}
+                    className="border-b border-white/5 last:border-b-0"
+                  >
+                    {/* Job title */}
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <span
+                          className={cn(
+                            "flex size-11 shrink-0 items-center justify-center rounded-xl border border-white/10",
+                            status === "rejected"
+                              ? "bg-red-500/10 text-red-400"
+                              : "bg-white/6 text-white/70"
+                          )}
+                        >
+                          {getApplicationIcon(application.jobTitle)}
+                        </span>
+                        <div>
+                          <p className="font-medium text-white">
+                            {application.jobTitle}
+                          </p>
+                          <p className="mt-0.5 text-xs text-white/45">
+                            {application.jobType ?? "Application"}
+                            {application.workMode
+                              ? ` • ${application.workMode}`
+                              : ""}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Company */}
+                    <td className="px-6 py-4 text-white/80">
+                      {application.companyName}
+                    </td>
+
+                    {/* Applied */}
+                    <td className="px-6 py-4 whitespace-nowrap text-white/60">
+                      {application.applied ?? "Recently"}
+                    </td>
+
+                    {/* Status */}
+                    <td className="px-6 py-4">
                       <span
                         className={cn(
-                          "flex size-11 shrink-0 items-center justify-center rounded-xl border border-white/10",
-                          application.status === "rejected"
-                            ? "bg-red-500/10 text-red-400"
-                            : "bg-white/6 text-white/70"
+                          "inline-flex min-w-20 justify-center rounded-full border px-3 py-1 text-xs font-medium capitalize",
+                          statusStyles[status]
                         )}
                       >
-                        {application.icon}
+                        {status}
                       </span>
-                      <div>
-                        <p className="font-medium text-white">
-                          {application.title}
-                        </p>
-                        <p className="mt-0.5 text-xs text-white/45">
-                          {application.jobType} <span aria-hidden>•</span>{" "}
-                          {application.workMode}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Company */}
-                  <td className="px-6 py-4 text-white/80">
-                    {application.company}
-                  </td>
-
-                  {/* Applied */}
-                  <td className="px-6 py-4 whitespace-nowrap text-white/60">
-                    {application.applied}
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-6 py-4">
-                    <span
-                      className={cn(
-                        "inline-flex min-w-20 justify-center rounded-full border px-3 py-1 text-xs font-medium capitalize",
-                        statusStyles[application.status]
-                      )}
-                    >
-                      {application.status}
-                    </span>
-                  </td>
-
-                  {/* Action */}
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      type="button"
-                      className="text-sm text-white/70 transition-colors hover:text-white"
-                    >
-                      Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
+                    {/* Action */}
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        type="button"
+                        className="text-sm text-white/70 transition-colors hover:text-white"
+                      >
+                        Details
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -244,7 +233,8 @@ const ApplicationsPage = () => {
         {/* Footer / pagination */}
         <footer className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 px-6 py-4">
           <p className="text-sm text-white/50">
-            Showing 1-5 of 24 applications
+            Showing 1-{applications.length} of {applications.length}{" "}
+            applications
           </p>
 
           <nav aria-label="Pagination" className="flex items-center gap-1">
