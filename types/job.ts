@@ -9,6 +9,8 @@ export type JobStatus = "active" | "expired"
 export type JobFormData = {
   title: string
   companyName: string
+  companyId?: string
+  recruiterId: string
   category: string
   jobType: JobType
   isRemote: boolean

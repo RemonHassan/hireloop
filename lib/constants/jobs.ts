@@ -27,6 +27,7 @@ export const SALARY_FREQUENCIES = [
 export const EMPTY_JOB_FORM: JobFormData = {
   title: "",
   companyName: "",
+  recruiterId: "",
   category: "",
   jobType: "full-time",
   isRemote: false,

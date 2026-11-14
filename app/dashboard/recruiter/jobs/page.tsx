@@ -10,6 +10,7 @@ import { formatCompensation, formatDeadline } from "@/lib/format"
 import { iconButtonClass, surfaceClass } from "@/lib/styles"
 import { cn } from "@/lib/utils"
 import type { JobRow } from "@/types"
+import { getSession } from "@/lib/core/server"
 
 // Responsive column visibility — shared by <th> and <td> so they always agree.
 const cellVis = {
@@ -25,7 +26,8 @@ const headingClass =
 const cellClass = "px-3 py-3.5"
 
 export default async function RecruiterJobsPage() {
-  const jobs: JobRow[] = await getJobs()
+  const session = await getSession()
+  const jobs: JobRow[] = await getJobs(`recruiterId=${session?.user.id}`)
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">

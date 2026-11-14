@@ -19,7 +19,6 @@ import { Switch } from "@/components/ui/switch"
 import { toast } from "@/components/ui/toast"
 import { createJob } from "@/lib/actions/jobs"
 import {
-  EMPTY_JOB_FORM,
   JOB_CATEGORIES,
   JOB_TYPES,
   SALARY_FREQUENCIES,
@@ -27,9 +26,27 @@ import {
 import { brandButtonClass } from "@/lib/styles"
 import { cn } from "@/lib/utils"
 import type { JobFormData, JobType } from "@/types"
+import { useSession } from "@/lib/auth-client"
 
 export default function NewJobPage() {
-  const [form, setForm] = useState<JobFormData>(() => ({ ...EMPTY_JOB_FORM }))
+  const { data: session } = useSession()
+  const [form, setForm] = useState<JobFormData>({
+    title: "",
+    companyName: "",
+    recruiterId: session?.user.id ?? "",
+    category: "",
+    jobType: "full-time",
+    isRemote: false,
+    location: "",
+    deadline: "",
+    minSalary: "",
+    maxSalary: "",
+    salaryFrequency: "per hour",
+    responsibilities: "",
+    requirements: "",
+    applicants: 0,
+    status: "active",
+  })
   const router = useRouter()
 
   const set =

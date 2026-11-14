@@ -75,7 +75,7 @@ export default async function CheckoutSuccessPage({
         className="pointer-events-none absolute top-24 left-1/2 size-80 -translate-x-1/2 rounded-full bg-emerald-500/5 blur-3xl"
       />
 
-      <main className="relative w-full max-w-[520px]">
+      <main className="relative w-full max-w-130">
         <section
           aria-labelledby="success-title"
           className="overflow-hidden rounded-2xl border border-white/10 bg-surface p-8 text-center shadow-[0_24px_80px_-24px_rgba(0,0,0,0.9)] sm:p-12"
@@ -115,7 +115,7 @@ export default async function CheckoutSuccessPage({
             </span>
           </p>
 
-          <div className="mt-9 divide-y divide-white/5 rounded-xl border border-white/10 bg-white/[0.025] text-left">
+          <div className="mt-9 divide-y divide-white/5 rounded-xl border border-white/10 bg-white/2.5 text-left">
             <div className="flex items-center gap-3 px-4 py-3.5">
               <ShieldCheck
                 aria-hidden
