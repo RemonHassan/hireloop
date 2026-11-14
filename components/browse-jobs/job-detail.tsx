@@ -36,7 +36,6 @@ import {
   createApplication,
   getApplicationsCount,
 } from "@/lib/actions/applications"
-import { toast } from "../ui/toast"
 import { getUserPremiumById } from "@/lib/api/user"
 
 const REQUIREMENT_ICONS = [Code2, Cpu, PenTool, Monitor]
