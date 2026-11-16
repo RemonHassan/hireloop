@@ -33,7 +33,7 @@ export default function NewJobPage() {
   const [form, setForm] = useState<JobFormData>({
     title: "",
     companyName: "",
-    recruiterId: session?.user.id ?? "",
+    recruiterId: "",
     category: "",
     jobType: "full-time",
     isRemote: false,
@@ -56,7 +56,18 @@ export default function NewJobPage() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    const jobData: JobFormData = { ...form }
+
+    const recruiterId = session?.user.id
+
+    if (!recruiterId) {
+      toast.add({
+        title: "Not signed in",
+        description: "Sign in again to post a job.",
+      })
+      return
+    }
+
+    const jobData: JobFormData = { ...form, recruiterId }
     const result = await createJob(jobData)
 
     if (result.insertedId) {

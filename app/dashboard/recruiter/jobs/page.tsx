@@ -27,7 +27,10 @@ const cellClass = "px-3 py-3.5"
 
 export default async function RecruiterJobsPage() {
   const session = await getSession()
-  const jobs: JobRow[] = await getJobs(`recruiterId=${session?.user.id}`)
+  const recruiterId = session?.user.id
+  const jobs: JobRow[] = recruiterId
+    ? await getJobs(`recruiterId=${encodeURIComponent(recruiterId)}`)
+    : []
 
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-8">
