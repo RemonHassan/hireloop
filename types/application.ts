@@ -19,6 +19,11 @@ export type CreateApplicationResult = {
   acknowledged?: boolean
 }
 
+export type UpdateApplicationStatusResult = {
+  success?: boolean
+  updatedCount?: number
+}
+
 /** An application as returned by the applications API. */
 export type ApplicationRow = ApplicationFormData & {
   _id: string

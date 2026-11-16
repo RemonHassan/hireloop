@@ -4,6 +4,7 @@ export type {
   ApplicationStatus,
   CreateApplicationResult,
   JobApplication,
+  UpdateApplicationStatusResult,
 } from "./application"
 export type { SignInUser, SignUpUser, UserRole } from "./auth"
 export type {

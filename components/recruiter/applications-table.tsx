@@ -1,9 +1,21 @@
-import { Button } from "@/components/ui/button"
+"use client"
+
+import { useState } from "react"
+
 import { ApplicationStatusBadge } from "@/components/shared/application-status-badge"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { toast } from "@/components/ui/toast"
+import { updateApplicationStatus } from "@/lib/actions/applications"
 import { formatAppliedAt } from "@/lib/format"
 import { cn } from "@/lib/utils"
 import { surfaceClass, tableCellClass, tableHeadingClass } from "@/lib/styles"
-import type { JobApplication } from "@/types"
+import type { ApplicationStatus, JobApplication } from "@/types"
 
 // Columns collapse away on smaller screens instead of squashing the table.
 const cellVis = {
@@ -11,18 +23,58 @@ const cellVis = {
   applied: "hidden sm:table-cell",
 } satisfies Record<string, string>
 
-const SOON = "Status updates are not wired up yet"
+/** Review stages a recruiter can move an application between. */
+const REVIEW_STATUSES: readonly ApplicationStatus[] = [
+  "applied",
+  "review",
+  "interview",
+  "shortlisted",
+  "rejected",
+]
 
 type ApplicationsTableProps = {
   applications: JobApplication[]
   className?: string
 }
 
-/** Read-only review table shared by the per-job applications view. */
+/** Review table shared by the per-job applications view. */
 export function ApplicationsTable({
   applications,
   className,
 }: ApplicationsTableProps) {
+  // Optimistic status overrides keyed by application id.
+  const [statuses, setStatuses] = useState<Record<string, ApplicationStatus>>(
+    {}
+  )
+  const [savingId, setSavingId] = useState<string | null>(null)
+
+  const changeStatus = async (
+    application: JobApplication,
+    next: ApplicationStatus
+  ) => {
+    const previous =
+      statuses[application._id] ?? application.status ?? "applied"
+
+    setStatuses((current) => ({ ...current, [application._id]: next }))
+    setSavingId(application._id)
+
+    try {
+      await updateApplicationStatus(application._id, next)
+      toast.add({
+        title: "Status updated",
+        description: `${application.email} moved to ${next}.`,
+      })
+    } catch {
+      setStatuses((current) => ({ ...current, [application._id]: previous }))
+      toast.add({
+        title: "Could not update status",
+        description: "Please try again.",
+      })
+    } finally {
+      setSavingId(null)
+    }
+  }
+
   return (
     <section className={cn(surfaceClass, "overflow-hidden", className)}>
       <div className="overflow-x-auto">
@@ -62,6 +114,8 @@ export function ApplicationsTable({
                 application.applicantName?.trim() ||
                 application.email.split("@")[0] ||
                 "Applicant"
+              const status =
+                statuses[application._id] ?? application.status ?? "applied"
 
               return (
                 <tr
@@ -108,20 +162,44 @@ export function ApplicationsTable({
 
                   {/* Status */}
                   <td className={tableCellClass}>
-                    <ApplicationStatusBadge status={application.status} />
+                    <ApplicationStatusBadge status={status} />
                   </td>
 
-                  {/* Action — persistence lands with the status API */}
+                  {/* Action */}
                   <td className={cn(tableCellClass, "px-5 text-right")}>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled
-                      title={SOON}
-                    >
-                      Update status
-                    </Button>
+                    <div className="flex justify-end">
+                      <Select
+                        value={status}
+                        onValueChange={(next) => {
+                          if (next) {
+                            void changeStatus(
+                              application,
+                              next as ApplicationStatus
+                            )
+                          }
+                        }}
+                        disabled={savingId === application._id}
+                      >
+                        <SelectTrigger
+                          size="sm"
+                          aria-label={`Change status for ${name}`}
+                          className="w-32 justify-between border-white/10 bg-surface-raised text-white/80 capitalize"
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {REVIEW_STATUSES.map((option) => (
+                            <SelectItem
+                              key={option}
+                              value={option}
+                              className="capitalize"
+                            >
+                              {option}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </td>
                 </tr>
               )
