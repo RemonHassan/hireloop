@@ -7,7 +7,12 @@ import { PageHeader } from "@/components/shared/page-header"
 import { buttonVariants } from "@/components/ui/button"
 import { getJobs } from "@/lib/api/jobs"
 import { formatCompensation, formatDeadline } from "@/lib/format"
-import { iconButtonClass, surfaceClass } from "@/lib/styles"
+import {
+  iconButtonClass,
+  surfaceClass,
+  tableCellClass,
+  tableHeadingClass,
+} from "@/lib/styles"
 import { cn } from "@/lib/utils"
 import type { JobRow } from "@/types"
 import { getSession } from "@/lib/core/server"
@@ -20,10 +25,6 @@ const cellVis = {
   applicants: "hidden lg:table-cell",
   deadline: "hidden lg:table-cell",
 } satisfies Record<string, string>
-
-const headingClass =
-  "px-3 py-3.5 text-xs font-medium tracking-wide text-white/50 uppercase"
-const cellClass = "px-3 py-3.5"
 
 export default async function RecruiterJobsPage() {
   const session = await getSession()
@@ -65,26 +66,30 @@ export default async function RecruiterJobsPage() {
               <tr className="border-b border-white/10">
                 <th
                   scope="col"
-                  className={cn(headingClass, "px-5", "lg:w-[20%]")}
+                  className={cn(tableHeadingClass, "px-5", "lg:w-[20%]")}
                 >
                   Job title &amp; dept
                 </th>
                 <th
                   scope="col"
-                  className={cn(headingClass, cellVis.company, "lg:w-[16%]")}
+                  className={cn(
+                    tableHeadingClass,
+                    cellVis.company,
+                    "lg:w-[16%]"
+                  )}
                 >
                   Company &amp; location
                 </th>
                 <th
                   scope="col"
-                  className={cn(headingClass, cellVis.type, "lg:w-[9%]")}
+                  className={cn(tableHeadingClass, cellVis.type, "lg:w-[9%]")}
                 >
                   Type
                 </th>
                 <th
                   scope="col"
                   className={cn(
-                    headingClass,
+                    tableHeadingClass,
                     cellVis.compensation,
                     "lg:w-[12%]"
                   )}
@@ -93,22 +98,30 @@ export default async function RecruiterJobsPage() {
                 </th>
                 <th
                   scope="col"
-                  className={cn(headingClass, cellVis.applicants, "lg:w-[12%]")}
+                  className={cn(
+                    tableHeadingClass,
+                    cellVis.applicants,
+                    "lg:w-[12%]"
+                  )}
                 >
                   Applicants
                 </th>
-                <th scope="col" className={cn(headingClass, "lg:w-[9%]")}>
+                <th scope="col" className={cn(tableHeadingClass, "lg:w-[9%]")}>
                   Status
                 </th>
                 <th
                   scope="col"
-                  className={cn(headingClass, cellVis.deadline, "lg:w-[11%]")}
+                  className={cn(
+                    tableHeadingClass,
+                    cellVis.deadline,
+                    "lg:w-[11%]"
+                  )}
                 >
                   Deadline
                 </th>
                 <th
                   scope="col"
-                  className={cn(headingClass, "px-5", "lg:w-[11%]")}
+                  className={cn(tableHeadingClass, "px-5", "lg:w-[11%]")}
                 >
                   Actions
                 </th>
@@ -121,7 +134,7 @@ export default async function RecruiterJobsPage() {
                   className="border-b border-white/5 transition-colors last:border-b-0 hover:bg-white/3"
                 >
                   {/* Job title & dept */}
-                  <td className={cn(cellClass, "px-5")}>
+                  <td className={cn(tableCellClass, "px-5")}>
                     <div className="flex items-center gap-3">
                       <span
                         className="hidden size-10 shrink-0 items-center justify-center rounded-lg bg-brand/15 text-sm font-semibold text-brand-soft sm:flex"
@@ -130,9 +143,12 @@ export default async function RecruiterJobsPage() {
                         {job.title.charAt(0)}
                       </span>
                       <div className="flex min-w-0 flex-col">
-                        <span className="truncate font-medium text-ink">
+                        <Link
+                          href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+                          className="truncate font-medium text-ink transition-colors hover:text-brand-soft"
+                        >
                           {job.title}
-                        </span>
+                        </Link>
                         <span className="truncate text-xs text-white/50">
                           {job.category}
                         </span>
@@ -141,7 +157,7 @@ export default async function RecruiterJobsPage() {
                   </td>
 
                   {/* Company & location */}
-                  <td className={cn(cellClass, cellVis.company)}>
+                  <td className={cn(tableCellClass, cellVis.company)}>
                     <div className="flex min-w-0 flex-col">
                       <span className="truncate text-ink">
                         {job.companyName}
@@ -155,19 +171,19 @@ export default async function RecruiterJobsPage() {
                   </td>
 
                   {/* Type */}
-                  <td className={cn(cellClass, cellVis.type)}>
+                  <td className={cn(tableCellClass, cellVis.type)}>
                     <JobTypePill type={job.jobType} />
                   </td>
 
                   {/* Compensation */}
-                  <td className={cn(cellClass, cellVis.compensation)}>
+                  <td className={cn(tableCellClass, cellVis.compensation)}>
                     <span className="whitespace-nowrap text-white/80">
                       {formatCompensation(job)}
                     </span>
                   </td>
 
                   {/* Applicants */}
-                  <td className={cn(cellClass, cellVis.applicants)}>
+                  <td className={cn(tableCellClass, cellVis.applicants)}>
                     <span className="flex items-center gap-2 whitespace-nowrap text-white/80">
                       <Users aria-hidden className="size-4 text-white/40" />
                       {job.applicants} candidates
@@ -175,12 +191,12 @@ export default async function RecruiterJobsPage() {
                   </td>
 
                   {/* Status */}
-                  <td className={cellClass}>
+                  <td className={tableCellClass}>
                     <JobStatusBadge status={job.status} />
                   </td>
 
                   {/* Deadline */}
-                  <td className={cn(cellClass, cellVis.deadline)}>
+                  <td className={cn(tableCellClass, cellVis.deadline)}>
                     <div className="flex flex-col whitespace-nowrap">
                       <span className="text-ink">
                         {formatDeadline(job.deadline)}
@@ -192,15 +208,16 @@ export default async function RecruiterJobsPage() {
                   </td>
 
                   {/* Actions */}
-                  <td className={cn(cellClass, "px-5")}>
+                  <td className={cn(tableCellClass, "px-5")}>
                     <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        aria-label={`View ${job.title}`}
+                      <Link
+                        href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+                        aria-label={`View applications for ${job.title}`}
+                        title="View applications"
                         className={iconButtonClass}
                       >
                         <Eye aria-hidden className="size-4" />
-                      </button>
+                      </Link>
                       <button
                         type="button"
                         aria-label={`Edit ${job.title}`}

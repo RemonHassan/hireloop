@@ -21,6 +21,33 @@ export function formatJobType(jobType: JobType) {
   return jobType.charAt(0).toUpperCase() + jobType.slice(1)
 }
 
+/**
+ * Applied date for an application. Uses `createdAt` when the API stored one and
+ * otherwise falls back to the timestamp embedded in the Mongo ObjectId.
+ */
+export function formatAppliedAt(application: {
+  _id: string
+  createdAt?: string
+}) {
+  const date = application.createdAt
+    ? new Date(application.createdAt)
+    : objectIdToDate(application._id)
+
+  if (!date || Number.isNaN(date.getTime())) return "—"
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  })
+}
+
+/** ObjectIds start with a 4-byte creation timestamp (see MongoDB docs). */
+function objectIdToDate(id: string): Date | null {
+  if (!/^[0-9a-f]{24}$/i.test(id)) return null
+  return new Date(Number.parseInt(id.slice(0, 8), 16) * 1000)
+}
+
 /** "Remote", "New York, USA (Remote)" or the office location. */
 export function formatJobLocation(
   job: Pick<JobFormData, "location" | "isRemote">

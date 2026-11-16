@@ -10,28 +10,17 @@ import {
   PenTool,
 } from "lucide-react"
 
+import { ApplicationStatusBadge } from "@/components/shared/application-status-badge"
 import { cn } from "@/lib/utils"
 import { getApplications } from "@/lib/actions/applications"
 import type { ApplicationRow } from "@/types"
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 
-const statusStyles = {
-  applied: "border-white/10 bg-white/10 text-white/80",
-  review: "border-amber-500/40 bg-amber-500/10 text-amber-300",
-  interview: "border-violet-500/40 bg-violet-500/10 text-violet-300",
-  shortlisted: "border-sky-500/40 bg-sky-500/10 text-sky-300",
-  rejected: "border-red-500/40 bg-red-500/10 text-red-300",
-  offered: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
-}
-
-type ApplicationStatus = keyof typeof statusStyles
-
 type Application = ApplicationRow & {
   jobType?: string
   workMode?: string
   applied?: string
-  status?: ApplicationStatus
 }
 
 function getApplicationIcon(title: string): ReactNode {
@@ -204,14 +193,10 @@ const ApplicationsPage = async () => {
 
                     {/* Status */}
                     <td className="px-6 py-4">
-                      <span
-                        className={cn(
-                          "inline-flex min-w-20 justify-center rounded-full border px-3 py-1 text-xs font-medium capitalize",
-                          statusStyles[status]
-                        )}
-                      >
-                        {status}
-                      </span>
+                      <ApplicationStatusBadge
+                        status={status}
+                        className="min-w-20"
+                      />
                     </td>
 
                     {/* Action */}

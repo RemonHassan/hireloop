@@ -16,3 +16,9 @@ export const brandLinkClass =
 
 export const iconButtonClass =
   "flex size-8 items-center justify-center rounded-md border border-white/10 bg-surface-raised text-white/60 transition-colors hover:border-white/25 hover:text-white"
+
+/** Shared table typography, kept in sync between recruiter tables. */
+export const tableHeadingClass =
+  "px-3 py-3.5 text-xs font-medium tracking-wide text-white/50 uppercase"
+
+export const tableCellClass = "px-3 py-3.5"
