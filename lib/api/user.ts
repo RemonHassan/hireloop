@@ -1,23 +1,10 @@
 import type { UserRole } from "@/types"
-import { auth } from "../auth"
-import { headers } from "next/headers"
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"
 
 export const getUserPremiumById = async (userId: string) => {
   const response = await fetch(`${BASE_URL}/users/${userId}/premium`)
   return response.json()
-}
-export const getUser = async () => {
-  const users = await auth.api.listUsers({
-    query: {
-      sortBy: "name", // The field to sort by.
-      sortDirection: "desc", // The direction to sort by.
-    },
-    // This endpoint requires session cookies.
-    headers: await headers(),
-  })
-  return users
 }
 
 /** Subset of the user document that is safe to surface in the dashboard. */
@@ -26,6 +13,9 @@ export type UserSummary = {
   name: string
   email: string
   role?: UserRole
+  /** ISO signup timestamp, when the backend stored one. */
+  createdAt?: string
+  emailVerified?: boolean
 }
 
 type RawUser = {
@@ -33,6 +23,8 @@ type RawUser = {
   name?: string
   email?: string
   role?: UserRole
+  createdAt?: string
+  emailVerified?: boolean
 }
 
 /** Server-side directory used to resolve applicant names and emails. */
@@ -45,10 +37,12 @@ export async function getUsers(): Promise<UserSummary[]> {
 
   const users: RawUser[] = await res.json()
 
-  return users.map(({ _id, name, email, role }) => ({
+  return users.map(({ _id, name, email, role, createdAt, emailVerified }) => ({
     id: _id,
     name: name ?? email ?? "Applicant",
     email: email ?? "",
     role,
+    createdAt,
+    emailVerified,
   }))
 }

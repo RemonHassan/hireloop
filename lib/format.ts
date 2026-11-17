@@ -48,6 +48,20 @@ function objectIdToDate(id: string): Date | null {
   return new Date(Number.parseInt(id.slice(0, 8), 16) * 1000)
 }
 
+/** Account creation date; "—" when the backend has no timestamp. */
+export function formatJoinedDate(createdAt?: string) {
+  if (!createdAt) return "—"
+
+  const date = new Date(createdAt)
+  if (Number.isNaN(date.getTime())) return "—"
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  })
+}
+
 /** "Remote", "New York, USA (Remote)" or the office location. */
 export function formatJobLocation(
   job: Pick<JobFormData, "location" | "isRemote">
